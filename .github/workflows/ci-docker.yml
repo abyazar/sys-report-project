@@ -1,0 +1,40 @@
+name: CI Docker Build
+
+on:
+  push:
+    branches:
+      - main
+    pull-request:
+      branches:
+        - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set-Up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build Docker Image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: false
+        tags: sys-reporter:latest
+
+    - name: Run Docker Container Test
+      run: |
+        REPORT_OUTPUT=$(docker run sys-reporter:latest)
+
+        if echo "$REPORT_OUPUT" | grep "System Report"; then
+          echo "Container execution test successful."
+          echo:"Output: "
+          echo "$REPORT_OUTPUT"
+        else
+          echo "Container execution test failed."
+          exit 1
+        fi
