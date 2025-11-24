@@ -22,11 +22,11 @@ jobs:
     - name: Build Docker Image
       run: docker build -t sys-reporter:latest .
       
-    - name: Run Docker Container Test
+    - name: Run Container Test
       run: |
         REPORT_OUTPUT=$(docker run sys-reporter:latest)
 
-        if echo "$REPORT_OUPUT" | grep "System Report"; then
+        if echo "$REPORT_OUTPUT" | grep "System Report"; then
           echo "Container execution test successful."
           echo:"Output: "
           echo "$REPORT_OUTPUT"
